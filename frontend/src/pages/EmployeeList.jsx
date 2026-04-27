@@ -59,6 +59,10 @@ const EmployeeList = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Employee</h1>
 
+        <div className="bg-red-500 text-white p-4">
+          TEST
+        </div>
+
         <div className="flex items-center gap-3">
          
           <div className="flex items-center border rounded-lg px-3 py-2">
