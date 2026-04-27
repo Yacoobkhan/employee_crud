@@ -1,38 +1,38 @@
 import express from "express";
 import multer from "multer";
-import path from "path";
-import { fileURLToPath } from "url";
+import cloudinary from "../config/cloudinary.js";
 import Employee from "../models/employee.js";
 
 const router = express.Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// 👉 Use memory storage (no local uploads)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "uploads/"); 
-    },
-    filename: (req, file, cb) => {
-      cb(null, Date.now() + path.extname(file.originalname)); 
-    },
-  });
-
-  const upload = multer({storage});
-  
-
-// Create Employee
+// ================= CREATE =================
 router.post("/", upload.single("photo"), async (req, res) => {
   try {
-    const employeeData = req.body;
+    let photoUrl = null;
 
     if (req.file) {
-      employeeData.photo = req.file.filename; 
+      // Convert buffer → base64
+      const base64 = req.file.buffer.toString("base64");
+      const dataURI = `data:${req.file.mimetype};base64,${base64}`;
+
+      const result = await cloudinary.uploader.upload(dataURI, {
+        folder: "employees",
+      });
+
+      photoUrl = result.secure_url;
     }
 
-    const newEmployee = await Employee.create(employeeData);
-    res.status(201).json(newEmployee);
+    const employee = await Employee.create({
+      ...req.body,
+      photo: photoUrl,
+    });
+
+    res.status(201).json(employee);
   } catch (err) {
     console.error("Error creating employee:", err);
     res.status(500).json({ error: "Failed to create employee" });
@@ -40,7 +40,7 @@ router.post("/", upload.single("photo"), async (req, res) => {
 });
 
 
-// Get all Employees
+// ================= GET ALL =================
 router.get("/", async (req, res) => {
   try {
     const employees = await Employee.findAll();
@@ -51,52 +51,70 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get Employee By id
+
+// ================= GET BY ID =================
 router.get("/:id", async (req, res) => {
-    try {
-      const employee = await Employee.findByPk(req.params.id); // only fetch
-      if (!employee) {
-        return res.status(404).json({ error: "Employee not found" });
-      }
-      res.json(employee);
-    } catch (err) {
-      console.error("Error fetching employee:", err);
-      res.status(500).json({ error: "Failed to fetch employee" });
-    }
-  });
-
-// Update Employee By id
-router.put("/:id", upload.single("photo"), async (req, res) => {
   try {
-    const employeeId = req.params.id;
-    const employeeData = req.body;
+    const employee = await Employee.findByPk(req.params.id);
 
-    const existingEmployee = await Employee.findByPk(employeeId);
-    if (!existingEmployee) {
+    if (!employee) {
       return res.status(404).json({ error: "Employee not found" });
     }
 
-    if (req.file) {
-      employeeData.photo = req.file.filename;
-    } else {
-      employeeData.photo = existingEmployee.photo;
+    res.json(employee);
+  } catch (err) {
+    console.error("Error fetching employee:", err);
+    res.status(500).json({ error: "Failed to fetch employee" });
+  }
+});
+
+
+// ================= UPDATE =================
+router.put("/:id", upload.single("photo"), async (req, res) => {
+  try {
+    const employee = await Employee.findByPk(req.params.id);
+
+    if (!employee) {
+      return res.status(404).json({ error: "Employee not found" });
     }
 
-    await existingEmployee.update(employeeData);
-    res.json(existingEmployee);
+    let photoUrl = employee.photo;
+
+    if (req.file) {
+      const base64 = req.file.buffer.toString("base64");
+      const dataURI = `data:${req.file.mimetype};base64,${base64}`;
+
+      const result = await cloudinary.uploader.upload(dataURI, {
+        folder: "employees",
+      });
+
+      photoUrl = result.secure_url;
+    }
+
+    await employee.update({
+      ...req.body,
+      photo: photoUrl,
+    });
+
+    res.json(employee);
   } catch (err) {
     console.error("Error updating employee:", err);
     res.status(500).json({ error: "Failed to update employee" });
   }
 });
 
-//Delete Employee By id
+
+// ================= DELETE =================
 router.delete("/:id", async (req, res) => {
   try {
     const deleted = await Employee.destroy({
       where: { id: req.params.id },
     });
-    if (!deleted) return res.status(404).json({ error: "Employee not found" });
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Employee not found" });
+    }
+
     res.json({ message: "Employee deleted successfully" });
   } catch (err) {
     console.error("Error deleting employee:", err);
