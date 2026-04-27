@@ -116,7 +116,7 @@ const EmployeeList = () => {
                       <img
                         src={
                           emp.photo
-                            ? `${BACKEND_URL}/uploads/${emp.photo}`
+                            ? emp.photo   // ✅ direct Cloudinary URL
                             : "/default-avatar.png"
                         }
                         className="w-[50px] h-[50px] rounded-full object-cover border"
