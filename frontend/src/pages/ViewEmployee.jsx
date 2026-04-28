@@ -50,7 +50,7 @@ const ViewEmployee = () => {
           <img
             src={
               employee.photo
-                ? `${BACKEND_URL}/uploads/${employee.photo}`
+                ? employee.photo
                 : "/default-avatar.png"
             }
             alt={employee.name}
