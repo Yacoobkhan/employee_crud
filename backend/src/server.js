@@ -12,7 +12,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express()
 app.use(cors({
-  origin: process.env.VITE_FRONTEND_URL,   
+  origin: [
+    "http://localhost:5173",
+    "https://crudoperati.netlify.app"
+  ],
   credentials: true
 }));
 app.use(express.json());
