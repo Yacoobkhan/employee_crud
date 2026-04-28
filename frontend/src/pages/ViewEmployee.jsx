@@ -30,7 +30,7 @@ const ViewEmployee = () => {
     <div className="p-6 w-full">
       
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="text-xl">
+        <button type="button" onClick={() => navigate(-1)} className="text-xl">
           ←
         </button>
         <h1 className="text-3xl font-bold">View Employee Details</h1>
@@ -38,7 +38,7 @@ const ViewEmployee = () => {
 
       
       <div className="border-b mb-6">
-        <button className="flex items-center gap-2 px-4 py-2 border-b-2 border-blue-500 text-blue-600 font-semibold">
+        <button type="button" className="flex items-center gap-2 px-4 py-2 border-b-2 border-blue-500 text-blue-600 font-semibold">
           <FaUser /> Personal Information
         </button>
       </div>
