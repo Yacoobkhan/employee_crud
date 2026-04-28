@@ -14,7 +14,7 @@ const app = express()
 app.use(cors({
   origin: [
     "http://localhost:5173",
-     "https://symphonious-pika-f8e9c4.netlify.app"
+     "https://employee-crud-1-ipyu.onrender.com"
   ],
   credentials: true
 }));
