@@ -37,7 +37,7 @@ const EmployeeForm = () =>{
       .then((res) => {
         setEmployee({ ...res.data, photo: null });
         if (res.data.photo) {
-          setPreview(`${BACKEND_URL}/uploads/${res.data.photo}`); 
+          setPreview(res.data.photo);
         }
       })
       .catch((err) => console.error(err));
