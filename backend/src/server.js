@@ -23,6 +23,10 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/employee", employeeRoutes);
 
+app.get("/",(req,res)=>{
+  res.send("API Working");
+})
+
 //DB Connection
 try {
   await sequelize.authenticate();
