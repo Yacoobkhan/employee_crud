@@ -78,6 +78,7 @@ const EmployeeList = () => {
 
           {/* Add Employee */}
           <button
+            type="button"
             onClick={() => navigate("/employee/add")}
             className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
           >
@@ -140,6 +141,7 @@ const EmployeeList = () => {
                   
                   <td className="py-3 px-4 flex gap-3 ">
                     <button
+                      type="button"
                       onClick={() => navigate(`/employee/view/${emp.id}`)}
                       className="text-gray-600 hover:text-blue-500 py-4"
                     >
@@ -147,6 +149,7 @@ const EmployeeList = () => {
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => navigate(`/employee/edit/${emp.id}`)}
                       className="text-blue-500 hover:text-blue-700"
                     >
@@ -154,6 +157,7 @@ const EmployeeList = () => {
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => confirmDelete(emp.id)}
                       className="text-red-500 hover:text-red-700"
                     >
@@ -177,12 +181,14 @@ const EmployeeList = () => {
             </p>
             <div className="flex justify-between">
               <button
+                type="button"
                 onClick={() => setShowConfirm(false)}
                 className="bg-red-500 text-white w-32 py-2 rounded-lg hover:bg-red-600"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleDelete}
                 className="bg-blue-500 text-white w-32 py-2 rounded-lg hover:bg-blue-600"
               >
